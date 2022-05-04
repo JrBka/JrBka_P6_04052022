@@ -1,6 +1,6 @@
-// importation des package express
+//importation des package express
 const express = require("express");
-//inportation des packages mongoose
+//importation des packages mongoose
 const mongoose = require("mongoose");
 //importation des packages path
 const path = require('path');
@@ -10,7 +10,7 @@ const userRoutes = require('./routes/user');
 
 // declaration de la fonction express
 const app = express();
-//connection a la base de donnée objet_a_vendre, héberger sur mongoDB
+//connection a la base de donnée, héberger sur mongoDB
 mongoose.connect('mongodb+srv://JRBKA:Jerem54800@cluster0.nbztc.mongodb.net/sauces?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -20,13 +20,13 @@ mongoose.connect('mongodb+srv://JRBKA:Jerem54800@cluster0.nbztc.mongodb.net/sauc
 //use = tous les type de requete
 app.use(express.json());
 
-//middleWear cross-origin
+//Defini le contenu autorisé dans header
 app.use((req, res, next) => {
-    //tout le monde peut y acceder
+    //tout le monde peut y acceder ("*")
     res.setHeader('Access-Control-Allow-Origin', '*');
     //on peut ajouter ces headers à la requete
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    //on peut ajouter ces methodes de requetes
+    //on peut utiliser ces methodes de requetes
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
