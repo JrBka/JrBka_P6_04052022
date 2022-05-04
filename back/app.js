@@ -11,7 +11,7 @@ const userRoutes = require('./routes/user');
 // declaration de la fonction express
 const app = express();
 //connection a la base de donnée, héberger sur mongoDB
-mongoose.connect('mongodb+srv://JRBKA:Jerem54800@cluster0.nbztc.mongodb.net/sauces?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://JRBKA:MongoDB-P6@cluster0.nbztc.mongodb.net/sauces?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
