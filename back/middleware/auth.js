@@ -1,3 +1,4 @@
+//importation des packages jsonwebtoken de crypter le token de l'utilisateur
 const jsonwebtoken = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {

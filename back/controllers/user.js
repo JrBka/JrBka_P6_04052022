@@ -1,5 +1,8 @@
+//importation des packages bcrypt
 const bcrypt = require("bcrypt");
+//importation du model user.js
 const User = require("../models/user")
+//importatino des packages jsonwebtoken
 const jsonwebtoken = require("jsonwebtoken")
 
 
@@ -27,6 +30,7 @@ exports.login = (req, res, next) => {
         if (!user) {
           return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
+        //compare le mdp entré au hash
         bcrypt.compare(req.body.password, user.password)
         //on recoi ici un boolean
           .then(valid => {
