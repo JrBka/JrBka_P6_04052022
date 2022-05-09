@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 //importation des packages path
 const path = require('path');
 
-const sauceRoutes = require("./routes/sauce")
+const sauceRoutes = require("./routes/sauce");
 const userRoutes = require('./routes/user');
 
 // declaration de la fonction express
