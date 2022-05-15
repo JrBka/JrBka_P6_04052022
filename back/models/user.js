@@ -1,6 +1,6 @@
 //importation des packages mongoose
 const mongoose = require("mongoose");
-// importation du package mongoose uniquevalidator permettant d"avoir un email unique
+// importation du plugin mongoose uniquevalidator permettant d"avoir un email unique
 const uniqueValidator = require("mongoose-unique-validator");
 
 //schema utilisateur

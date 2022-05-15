@@ -5,7 +5,6 @@ const fs = require('fs');
 
 //creation d'une sauce
 exports.createSauce = (req, res, next) => {
-  console.log(req.body);
   const sauceObject = JSON.parse(req.body.sauce);
   sauceObject.likes = 0
   sauceObject.dislikes = 0
@@ -21,17 +20,32 @@ exports.createSauce = (req, res, next) => {
         message: 'Post saved successfully!'
       });
     }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-};
+    ).catch(
+      (error) => {
+        res.status(400).json({
+          error: error
+        });
+      }
+      );
+    };
 
-//affichage de la sauce selectionné
-exports.getOneSauce = (req, res, next) => {
+    //afficher toutes les sauces
+    exports.getAllSauce = (req, res, next) => {
+      Sauce.find().then(
+        (sauces) => {
+          res.status(200).json(sauces);
+        }
+      ).catch(
+        (error) => {
+          res.status(400).json({
+            error: error
+          });
+        }
+      );
+    };
+    
+    //affichage de la sauce selectionné
+    exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id
   })
@@ -52,12 +66,31 @@ exports.getOneSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file ?
     {
-      ...JSON.parse(req.body.sauce),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body };
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-    .catch(error => res.status(400).json({ error }));
+    ...JSON.parse(req.body.sauce),
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  } : { ...req.body };
+  //s'il y a une nouvelle image supprimer l'ancienne dans le dossier images et la remplacer par la nouvelle. 
+  //mettre a jour la nouvelle sauce dans la base de données
+  if (req.file) {
+    Sauce.findOne({ _id: req.params.id })
+    .then(sauce => {
+        const filename = sauce.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => { 
+          Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+          .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+          .catch(error => res.status(400).json({ error }));
+        });
+      })
+      .catch(error => res.status(500).json({ error }));
+    
+  }else{
+    //si pas de nouvelle image mettre a jour la nouvelle sauce
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+      .catch(error => res.status(400).json({ error }));
+  }
+    
+    
 };
 
 //supprimer une sauce
@@ -74,20 +107,6 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-//afficher toutes les sauces
-exports.getAllSauce = (req, res, next) => {
-  Sauce.find().then(
-    (sauces) => {
-      res.status(200).json(sauces);
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-};
 
 //like et dislike sauce, ajout ou suppression de l'userId dans le tableau usersLiked ou usersDisliked
 exports.likeSauce = (req, res, next) => {

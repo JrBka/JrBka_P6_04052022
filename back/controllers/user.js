@@ -4,24 +4,31 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user")
 //importatino des packages jsonwebtoken
 const jsonwebtoken = require("jsonwebtoken")
-
+//importation de dotenv
+const dotenv = require("dotenv").config()
+//importation du middleware password.js
+let schema = require("../middleware/password")
 
 exports.signup = (req, res, next) => {
-    //cryptage avec bcrypt. hash = mdp crypté. 10 = nombre de tour de l'algorythme
+  console.log(schema.validate(req.body.password));
+  if (schema.validate(req.body.password)) {
+    //cryptage avec bcrypt. hash = mdp crypté. 10 = nombre de boucle de l'algorythme
     bcrypt.hash(req.body.password, 10)
-      .then(hash => {
-        const user = new User({
-          email: req.body.email,
-          password: hash
-        });
-        console.log(user);
-        user.save()
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ error }));
-      })
-      .catch(error => {
-        console.log(error);  
-        res.status(500).json({ error })});
+    .then(hash => {
+      const user = new User({
+        email: req.body.email,
+        password: hash
+      });
+      console.log(user);
+      user.save()
+      .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+      .catch(error => res.status(400).json({ error }));
+    })
+    .catch(error => { 
+      res.status(500).json({ error })});
+    }else{
+      return res.status(401).json({ error: 'Mot de passe invalide !' });
+    }
 };
 
 exports.login = (req, res, next) => {
@@ -42,10 +49,10 @@ exports.login = (req, res, next) => {
               token: jsonwebtoken.sign(
                   {userId: user._id},
                   // clé secrete
-                  "RANDOM_TOKEN_SECRET",
+                  process.env.SECRET_KEY,
                   {expiresIn: "24h"}
               )
-            });
+            }); 
           })
           .catch(error => res.status(500).json({ error }));
       })
