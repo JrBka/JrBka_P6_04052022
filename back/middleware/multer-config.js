@@ -12,7 +12,7 @@ const MIME_TYPES = {
 const storage = multer.diskStorage({
     //determine la destination du fichier télécharger
   destination: (req, file, callback) => {
-      //le fichier ira dans le dossier image
+      //le fichier ira dans le dossier images
     callback(null, 'images');
   },
   //determine le nouveau nom du fichier
